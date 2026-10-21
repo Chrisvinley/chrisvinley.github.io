@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chrisvinley の主页">
+  <meta name="author" content="Chrisvinley">
+  <title>Chrisvinley の主页</title>
+  <link rel="icon" href="https://github.githubassets.com/favicons/favicon-dark.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      background: radial-gradient(ellipse at 30% 20%, #1a2340 0%, #0b0f1e 55%, #05070f 100%);
+      color: #e8ecf4;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ---------- 星空 ---------- */
+    .stars, .stars2, .stars3 {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      background: #cfe4ff;
+      border-radius: 50%;
+      animation: twinkle linear infinite;
+    }
+    .stars2 .star { background: #9fc3ff; }
+    .stars3 .star { background: #ffffff; }
+    @keyframes twinkle {
+      0%, 100% { opacity: .15; }
+      50% { opacity: 1; }
+    }
+
+    /* ---------- 主面板 ---------- */
+    .panel {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px;
+    }
+
+    .card {
+      text-align: center;
+      max-width: 640px;
+      width: 100%;
+      animation: fadeUp 1.2s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- 3D 头像翻页 ---------- */
+    .avatar-scene { width: 150px; height: 150px; margin: 0 auto 22px; perspective: 900px; cursor: pointer; }
+    .avatar-flip {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform .9s cubic-bezier(.4,.2,.2,1);
+      transform-style: preserve-3d;
+    }
+    .avatar-scene:hover .avatar-flip { transform: rotate3d(0, 1, 0, -35deg); }
+    .avatar-scene.flipped .avatar-flip { transform: rotate3d(0, 1, 0, 180deg); }
+    .avatar-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      backface-visibility: hidden;
+      box-shadow: 0 0 0 3px rgba(110,168,255,.35), 0 0 28px rgba(80,140,255,.45), 0 12px 32px rgba(0,0,0,.5);
+    }
+    .avatar-face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .avatar-back { transform: rotateY(180deg); }
+
+    h1.title {
+      font-size: 2.6rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+      text-shadow: 0 0 18px rgba(120,180,255,.55), 0 0 46px rgba(80,140,255,.3);
+    }
+
+    p.subtitle {
+      margin-top: 8px;
+      font-size: 1rem;
+      letter-spacing: 6px;
+      color: #7fa8d9;
+      text-transform: uppercase;
+    }
+
+    /* ---------- 点阵时钟 ---------- */
+    #clock-wrap { margin: 26px auto 6px; display: flex; justify-content: center; }
+    #clock { width: 100%; max-width: 480px; }
+
+    .divider {
+      width: 220px;
+      margin: 18px auto;
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(130,170,255,.6), transparent);
+    }
+
+    /* ---------- 一言 ---------- */
+    #hitokoto {
+      min-height: 3.2em;
+      font-size: .95rem;
+      color: #aebad0;
+      line-height: 1.7;
+    }
+    #hitokoto strong { color: #6f9bd8; font-weight: 600; }
+
+    /* ---------- 导航按钮 ---------- */
+    .nav-links { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+    .btn {
+      --btn-glow: rgba(110,168,255,.28);
+      padding: 10px 22px;
+      border: 1px solid var(--btn-glow);
+      border-radius: 8px;
+      color: #d7e4ff;
+      text-decoration: none;
+      font-size: .92rem;
+      letter-spacing: 1px;
+      background: rgba(255,255,255,.03);
+      backdrop-filter: blur(4px);
+      transition: all .3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 16px var(--btn-glow), inset 0 0 12px rgba(255,255,255,.04);
+      text-shadow: 0 0 8px currentColor;
+    }
+
+    .social-links { margin-top: 22px; display: flex; gap: 20px; justify-content: center; }
+    .social-links a { color: #6f87ad; transition: all .3s ease; }
+    .social-links a:hover { color: #cfe0ff; transform: translateY(-2px); }
+
+    /* ---------- 页脚 ---------- */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 18px 0 26px;
+      font-size: .8rem;
+      color: #4c5b75;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 480px) {
+      h1.title { font-size: 2rem; }
+      .avatar-scene { width: 120px; height: 120px; }
+      .btn { padding: 8px 14px; font-size: .84rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="s1"></div>
+  <div class="stars2" id="s2"></div>
+  <div class="stars3" id="s3"></div>
+
+  <main class="panel">
+    <div class="card">
+      <div class="avatar-scene" id="avatar-scene" title="点我翻面">
+        <div class="avatar-flip">
+          <div class="avatar-face avatar-front">
+            <img src="https://avatars.githubusercontent.com/u/120348550?v=4" alt="avatar">
+          </div>
+          <div class="avatar-face avatar-back">
+            <img src="https://github.com/Chrisvinley.png" alt="avatar">
+          </div>
+        </div>
+      </div>
+
+      <h1 class="title">Chrisvinley</h1>
+      <p class="subtitle">Reverse · Debug · Rebuild</p>
+
+      <div id="clock-wrap"><canvas id="clock" width="480" height="110"></canvas></div>
+      <hr class="divider">
+
+      <p id="hitokoto">The only way to reverse the future is to debug the present<br><strong>- Chrisvinley</strong></p>
+
+      <nav class="nav-links" id="nav-links"></nav>
+
+      <div class="social-links">
+        <a href="https://github.com/Chrisvinley" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer>Copyright &copy; 2022 - <span id="year"></span> Chrisvinley</footer>
+
+  <script>
+    /* ================= 星空背景 ================= */
+    (function stars() {
+      const layers = [
+        { el: document.getElementById('s1'), count: 90, size: [1, 1.6], dur: [2.5, 5] },
+        { el: document.getElementById('s2'), count: 50, size: [1.6, 2.4], dur: [3, 6.5] },
+        { el: document.getElementById('s3'), count: 24, size: [2.4, 3.2], dur: [4, 8] },
+      ];
+      layers.forEach(L => {
+        for (let i = 0; i < L.count; i++) {
+          const s = document.createElement('div');
+          s.className = 'star';
+          const sz = L.size[0] + Math.random() * (L.size[1] - L.size[0]);
+          s.style.width = s.style.height = sz + 'px';
+          s.style.left = Math.random() * 100 + '%';
+          s.style.top = Math.random() * 100 + '%';
+          s.style.animationDuration = L.dur[0] + Math.random() * (L.dur[1] - L.dur[0]) + 's';
+          s.style.animationDelay = Math.random() * 4 + 's';
+          L.el.appendChild(s);
+        }
+      });
+    })();
+
+    /* ================= 点阵时钟 + 粒子 ================= */
+    (function clock() {
+      const cv = document.getElementById('clock');
+      const ctx = cv.getContext('2d');
+      const FONT = {
+        '0': ['01110','10001','10011','10101','11001','10001','01110'],
+        '1': ['00100','01100','00100','00100','00100','00100','01110'],
+        '2': ['01110','10001','00001','00010','00100','01000','11111'],
+        '3': ['11110','00001','00001','01110','00001','00001','11110'],
+        '4': ['00010','00110','01010','10010','11111','00010','00010'],
+        '5': ['11111','10000','11110','00001','00001','10001','01110'],
+        '6': ['00110','01000','10000','11110','10001','10001','01110'],
+        '7': ['11111','00001','00010','00100','01000','01000','01000'],
+        '8': ['01110','10001','10001','01110','10001','10001','01110'],
+        '9': ['01110','10001','10001','01111','00001','00010','01100'],
+        ':': ['00000','00100','00100','00000','00100','00100','00000'],
+      };
+      const GAP = 10, DOT = 3.4, COLW = 5 * GAP + 14;
+      const COLORS = ['#4fa3ff', '#66e0ff', '#8f7dff', '#ff6f9d', '#ffd166', '#7dffb2'];
+      const particles = [];
+      let prevState = {};
+
+      function layout() {
+        const t = new Date();
+        const p = n => String(n).padStart(2, '0');
+        return p(t.getHours()) + ':' + p(t.getMinutes()) + ':' + p(t.getSeconds());
+      }
+
+      function spawn(x, y) {
+        const color = COLORS[(Math.random() * COLORS.length) | 0];
+        const n = 3 + (Math.random() * 3 | 0);
+        for (let i = 0; i < n; i++) {
+          particles.push({
+            x, y,
+            vx: (Math.random() - .5) * 3.4,
+            vy: -Math.random() * 3.2 - 1,
+            r: 1.2 + Math.random() * 2,
+            color,
+            life: 1,
+          });
+        }
+      }
+
+      function draw() {
+        const W = cv.width, H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        const str = layout();
+        const totalW = str.length * COLW - 14;
+        const x0 = (W - totalW) / 2, y0 = (H - 6 * GAP) / 2;
+        const state = {};
+
+        for (let d = 0; d < str.length; d++) {
+          const glyph = FONT[str[d]];
+          for (let r = 0; r < 7; r++) {
+            for (let c = 0; c < 5; c++) {
+              if (glyph[r][c] !== '1') continue;
+              const key = d + '-' + r + '-' + c;
+              const x = x0 + d * COLW + c * GAP;
+              const y = y0 + r * GAP;
+              state[key] = true;
+              ctx.beginPath();
+              ctx.arc(x, y, DOT, 0, Math.PI * 2);
+              ctx.fillStyle = 'rgba(130,190,255,.95)';
+              ctx.shadowColor = 'rgba(90,160,255,.9)';
+              ctx.shadowBlur = 8;
+              ctx.fill();
+              ctx.shadowBlur = 0;
+              if (!prevState[key]) spawn(x, y);
+            }
+          }
+        }
+        prevState = state;
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const pt = particles[i];
+          pt.vy += 0.12;
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          if (pt.y > H - 4) { pt.y = H - 4; pt.vy *= -0.55; }
+          pt.life -= 0.016;
+          if (pt.life <= 0) { particles.splice(i, 1); continue; }
+          ctx.globalAlpha = Math.max(pt.life, 0);
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, pt.r, 0, Math.PI * 2);
+          ctx.fillStyle = pt.color;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* ================= 导航 ================= */
+    (function nav() {
+      const links = [
+        { label: 'GitHub', url: 'https://github.com/Chrisvinley', color: '#6c8cff' },
+        { label: '仓库', url: 'https://github.com/Chrisvinley?tab=repositories', color: '#f85d5d' },
+        { label: 'Profile', url: 'https://github.com/Chrisvinley/Chrisvinley', color: '#ff1867' },
+        { label: '网易云音乐防更新', url: 'https://github.com/Chrisvinley/netease-cloudmusic-no-update', color: '#ffc53d' },
+      ];
+      const el = document.getElementById('nav-links');
+      links.forEach(item => {
+        const a = document.createElement('a');
+        a.href = item.url;
+        a.className = 'btn';
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.style.setProperty('--btn-glow', item.color + '55');
+        a.style.borderColor = item.color + '44';
+        a.style.color = item.color;
+        a.textContent = item.label;
+        el.appendChild(a);
+      });
+    })();
+
+    /* ================= 一言 ================= */
+    (function hitokoto() {
+      fetch('https://v1.hitokoto.cn')
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById('hitokoto').innerHTML =
+            d.hitokoto + '<br><strong>- ' + (d.from || '一言') + '</strong>';
+        })
+        .catch(() => {});
+    })();
+
+    /* ================= 头像翻面 / 年份 ================= */
+    document.getElementById('avatar-scene').addEventListener('click', function () {
+      this.classList.toggle('flipped');
+    });
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
